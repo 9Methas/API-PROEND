@@ -77,6 +77,21 @@ export class FormService {
     return data;
   }
 
+  async findOneByUserAndRecord(userId: string, recordId: string) {
+    const { data, error } = await this.supabase
+      .from('health_records')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('record_id', recordId)
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to fetch health record: ${error.message}`);
+    }
+
+    return data;
+  }
+
   async update(id: string, updateData: any) {
     const { data, error } = await this.supabase
       .from('health_records')
@@ -92,11 +107,43 @@ export class FormService {
     return data;
   }
 
+  async updateByUserAndRecord(userId: string, recordId: string, updateData: any) {
+    const { data, error } = await this.supabase
+      .from('health_records')
+      .update(updateData)
+      .eq('user_id', userId)
+      .eq('record_id', recordId)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to update health record: ${error.message}`);
+    }
+
+    return data;
+  }
+
   async remove(id: string) {
     const { data, error } = await this.supabase
       .from('health_records')
       .delete()
       .eq('record_id', id)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to delete health record: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  async removeByUserAndRecord(userId: string, recordId: string) {
+    const { data, error } = await this.supabase
+      .from('health_records')
+      .delete()
+      .eq('user_id', userId)
+      .eq('record_id', recordId)
       .select()
       .single();
 
